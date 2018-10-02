@@ -20,6 +20,7 @@ platforms:
 
 suites:
   - name: default
+    data_bags_path: test/data_bags
     run_list:
       - recipe[cassandra-reaper::default]
     verifier:

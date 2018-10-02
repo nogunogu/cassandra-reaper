@@ -38,10 +38,13 @@ jmxPorts:
   127.0.0.6: 7600
   127.0.0.7: 7700
   127.0.0.8: 7800
+  <%= @jmxport %>
 
-#jmxAuth:
-#  username: myUsername
-#  password: myPassword
+<% if @jmx_auth == true then %>
+jmxAuth:
+  username: <%= @jmx_user %>
+  password: <%= @jmx_password %>
+<% end %>
 
 logging:
   level: INFO

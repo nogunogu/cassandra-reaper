@@ -21,6 +21,18 @@ dpkg_package 'reaper_1.2.2_amd64.deb' do
   action :install
 end
 
+passwords = data_bag_item('passwords', 'jmxremote')
+
+template '/etc/cassandra-reaper/cassandra-reaper.yaml' do
+  source 'cassandra-reaper.yaml.erb'
+  variables(
+    :jmxport => "#{node['cassandra']['host']}: #{node['cassandra']['jmx_port']}",
+    :jmx_auth => true,
+    :jmx_user => passwords['jmx_user'],
+    :jmx_password => passwords['jmx_password']
+  )
+end
+
 service 'cassandra-reaper' do
   action :start
 end

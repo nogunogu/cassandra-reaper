@@ -1,0 +1,5 @@
+{
+  "id": "jmxremote",
+  "jmx_user": "cassandra",
+  "jmx_password": "password"
+}
