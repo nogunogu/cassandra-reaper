@@ -5,10 +5,6 @@
 # Copyright:: 2018, The Authors, All Rights Reserved.
 include_recipe 'java'
 
-# postgresql_server_install 'PostgreSQL server' do
-#   action :install
-# end
-
 # cookbook_file '/tmp/reaper_1.2.2_amd64.deb' do
 #   source 'reaper_1.2.2_amd64.deb'
 #   owner 'root'
@@ -38,13 +34,17 @@ passwords = data_bag_item('passwords', 'jmxremote')
 template '/etc/cassandra-reaper/cassandra-reaper.yaml' do
   source 'cassandra-reaper.yaml.erb'
   variables(
+    :storage_type => node['reaper']['storage_type'],
+    :datacenter_availability => node['reaper']['datacenter_availability'],
     :jmxport => "#{node['cassandra']['host']}: #{node['cassandra']['jmx_port']}",
     :jmx_auth => node['cassandra']['jmx_auth'],
     :jmx_user => passwords['jmx_user'],
-    :jmx_password => passwords['jmx_password']
+    :jmx_password => passwords['jmx_password'],
+    :cluster_name => node['cassandra']['cluster_name'],
+    :contact_points => node['cassandra']['contact_points']
   )
 end
 
 service 'cassandra-reaper' do
-  action :start
+  action :restart
 end

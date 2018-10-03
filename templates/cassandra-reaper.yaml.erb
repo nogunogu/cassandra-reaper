@@ -7,7 +7,7 @@ repairIntensity: 0.9
 scheduleDaysBetween: 7
 repairRunThreadCount: 15
 hangingRepairTimeoutMins: 30
-storageType: memory
+storageType: <%= @storage_type %>
 enableCrossOrigin: true
 incrementalRepair: false
 enableDynamicSeedList: true
@@ -26,19 +26,20 @@ useAddressTranslator: false
 #    then configure to EACH.
 #
 # The default is ALL
-datacenterAvailability: ALL
+datacenterAvailability: <%= @datacenter_availability %>
 
 # any cassandra nodes on 127.0.0.x addresses we presume are ccm nodes
 jmxPorts:
-  127.0.0.1: 7100
-  127.0.0.2: 7200
-  127.0.0.3: 7300
-  127.0.0.4: 7400
-  127.0.0.5: 7500
-  127.0.0.6: 7600
-  127.0.0.7: 7700
-  127.0.0.8: 7800
   <%= @jmxport %>
+  # 127.0.0.1: 7100
+  # 127.0.0.2: 7200
+  # 127.0.0.3: 7300
+  # 127.0.0.4: 7400
+  # 127.0.0.5: 7500
+  # 127.0.0.6: 7600
+  # 127.0.0.7: 7700
+  # 127.0.0.8: 7800
+
 
 <% if @jmx_auth == true then %>
 jmxAuth:
@@ -74,12 +75,18 @@ server:
   requestLog:
     appenders: []
 
-database:
-  # PostgreSQL JDBC settings
-  driverClass: org.postgresql.Driver
-  user: postgres
-  password: postgres
-  url: jdbc:postgresql://127.0.0.1/reaper
+cassandra:
+  clusterName: "<%= @cluster_name %>"
+  contactPoints: <%= @contact_points %>
+  keyspace: reaper_db
+  loadBalancingPolicy:
+    type: tokenAware
+    shuffleReplicas: true
+    subPolicy:
+      type: dcAwareRoundRobin
+      localDC:
+      usedHostsPerRemoteDC: 0
+      allowRemoteDCsForLocalConsistencyLevel: false
 
 autoScheduling:
   enabled: false
